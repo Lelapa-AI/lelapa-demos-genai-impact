@@ -17,6 +17,11 @@ import os
 mp_holistic = mp.solutions.mediapipe.solutions.holistic
 mp_drawing = mp.solutions.mediapipe.solutions.drawing_utils
 
+Data_path = os.getcwd()
+actions = np.array(["hello", "thanks", "IloveYou"])
+no_sequence = 30
+sequence_length = 30
+
 def mediapipe_detection(image, model):
     """
     Processes an image with the specified MediaPipe model and returns the 
