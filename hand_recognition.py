@@ -11,7 +11,13 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import time 
 import mediapipe as mp
-import os 
+import os  
+
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras.callbacks import TensorBoard
 
 # Initialize MediaPipe Holistic model and drawing utilities
 mp_holistic = mp.solutions.mediapipe.solutions.holistic
@@ -21,6 +27,21 @@ Data_path = os.getcwd()
 actions = np.array(["hello", "thanks", "IloveYou"])
 no_sequence = 30
 sequence_length = 30
+
+label_map = {label:num for num, label in enumerate(actions)}
+sequences, labels = [], []
+for action in actions:
+    for sequence in range(no_sequence):
+        window = []
+        for frame_num in range(sequence_length):
+            res = np.load(os.path.join(Data_path, action, str(sequence), f"{frame_num}.npy"))
+            window.append(res)
+        sequences.append(window)
+        labels.append(label_map[action])
+
+x = np.array(sequences)
+y = to_categorical(labels).astype(int)
+X_train, X_test, Y_train, Y_test = train_test_split(x, y, test_size=0.05)
 
 for action in actions:
     for sequence in range(no_sequence):
@@ -142,6 +163,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                     cv2.imshow("feed", image)  # Show the image with landmarks
                     if cv2.waitKey(1) & 0xFF == ord("q"):
                         break
+                    
 
 # Release resources and close windows
 cap.release()
