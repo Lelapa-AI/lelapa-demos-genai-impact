@@ -121,8 +121,8 @@ cap = cv2.VideoCapture(0)
 
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
     for action in actions:
-        for sequence in range(no_sequence):
-            for frame_num in range(sequence_length):
+        for sequence in range(30):
+            for frame_num in range(30):
                 ret, frame = cap.read()
                 if not ret:
                     break
@@ -188,3 +188,4 @@ model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categ
 model.fit(X_train, Y_train, epochs=2000, callbacks=[tb_callback])
 
 res = model.predict(X_test)
+model.save('action.h5')
