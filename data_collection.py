@@ -24,7 +24,8 @@ def path_creation():
 mp_holistic = mp.solutions.mediapipe.solutions.holistic
 mp_drawing = mp.solutions.mediapipe.solutions.drawing_utils    
                     
-def keypoints_extraction():
+def main_keypoints_extraction():
+    path_creation()
     cap = cv2.VidoCapture(0)
     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
         for action in actions:
@@ -142,3 +143,8 @@ def extract_keypoints(results):
     rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
     face = np.array([[res.x, res.y, res.z, res.visibility] for res in results.face_landmarks.landmark]).flatten() if results.face_landmarks else np.zeros(1404)
     return np.concatenate([pose, face, lh, rh])
+
+
+
+
+main_keypoints_extraction()
