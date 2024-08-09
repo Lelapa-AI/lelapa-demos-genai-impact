@@ -1,7 +1,9 @@
-from sklearn.model_selection import train_test_split
 import numpy as np
 import tensorflow as tf
 import os 
+
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import multilabel_confusion_matrix, accuracy_score
 
 Data_path = "data"
 actions = np.array(["hello", "thanks", "IloveYou"])
@@ -39,3 +41,15 @@ model.fit(X_train, Y_train, epochs=2000, callbacks=[tb_callback])
 
 res = model.predict(X_test)
 model.save('action.h5')
+
+# res = model.predict(X_test)
+# actions[np.argmax(res[4])]
+
+# model.save('action.h5')
+
+
+def matrix(X_test, y_test):
+    yhat = model.predict(X_test)
+    ytrue = np.argmax(y_test, axis=1).tolist()
+    yhat = np.argmax(yhat, axis=1).tolist()
+    multilabel_confusion_matrix(ytrue, yhat)
