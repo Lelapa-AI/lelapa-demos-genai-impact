@@ -24,7 +24,7 @@ from sklearn.model_selection import train_test_split
 mp_holistic = mp.solutions.mediapipe.solutions.holistic
 mp_drawing = mp.solutions.mediapipe.solutions.drawing_utils
 
-Data_path = os.getcwd()
+Data_path = "data"
 actions = np.array(["hello", "thanks", "IloveYou"])
 no_sequence = 30
 sequence_length = 30
@@ -110,10 +110,10 @@ def extract_keypoints(results):
         numpy.ndarray: A flattened array of keypoints for pose, face, left hand,
         and right hand.
     """
-    pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmarks]).flatten() if results.pose_landmarks else np.zeros(132)
-    lh = np.array([[res.x, res.y, res.z] for res in results.left_hand_landmarks.landmarks]).flatten() if results.left_hand_landmarks else np.zeros(21*3)
-    rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmarks]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
-    face = np.array([[res.x, res.y, res.z, res.visibility] for res in results.face_landmarks.landmarks]).flatten() if results.face_landmarks else np.zeros(1404)
+    pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(132)
+    lh = np.array([[res.x, res.y, res.z] for res in results.left_hand_landmarks.landmark]).flatten() if results.left_hand_landmarks else np.zeros(21*3)
+    rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
+    face = np.array([[res.x, res.y, res.z, res.visibility] for res in results.face_landmarks.landmark]).flatten() if results.face_landmarks else np.zeros(1404)
     return np.concatenate([pose, face, lh, rh])
 
 # Capture video from the default camera
