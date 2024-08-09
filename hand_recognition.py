@@ -12,12 +12,13 @@ import matplotlib.pyplot as plt
 import time 
 import mediapipe as mp
 import os  
+import tensorflow as tf
 
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense
-from tensorflow.keras.callbacks import TensorBoard
+# from tensorflow.keras.utils import to_categorical
+# from tensorflow.keras.models import Sequential
+# from tensorflow.keras.layers import LSTM, Dense
+# from tensorflow.keras.callbacks. import TensorBoard
 
 # Initialize MediaPipe Holistic model and drawing utilities
 mp_holistic = mp.solutions.mediapipe.solutions.holistic
@@ -167,19 +168,19 @@ for action in actions:
         labels.append(label_map[action])
 
 x = np.array(sequences)
-y = to_categorical(labels).astype(int)
+y = tf.keras.utils.to_categorical(labels).astype(int)
 X_train, X_test, Y_train, Y_test = train_test_split(x, y, test_size=0.05)
 
 log_dir = os.path.join('Logs')
-tb_callback = TensorBoard(log_dir=log_dir)
+tb_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
 
-model = Sequential()
-model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(30,1662)))
-model.add(LSTM(128, return_sequences=True, activation='relu'))
-model.add(LSTM(64, return_sequences=False, activation='relu'))
-model.add(Dense(64, activation='relu'))
-model.add(Dense(32, activation='relu'))
-model.add(Dense(actions.shape[0], activation='softmax'))
+model = tf.keras.models.Sequential()
+model.add(tf.keras.layers.LSTM(64, return_sequences=True, activation='relu', input_shape=(30,1662)))
+model.add(tf.keras.layers.LSTM(128, return_sequences=True, activation='relu'))
+model.add(tf.keras.layers.LSTM(64, return_sequences=False, activation='relu'))
+model.add(tf.keras.layers.Dense(64, activation='relu'))
+model.add(tf.keras.layers.Dense(32, activation='relu'))
+model.add(tf.keras.layers.Dense(actions.shape[0], activation='softmax'))
 
 res = [.7, 0.2, 0.1]
 actions[np.argmax(res)]
