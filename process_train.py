@@ -14,7 +14,8 @@ for action in actions:
     for sequence in range(30):
         window = []
         for frame_num in range(30):
-            res = np.load(os.path.join(Data_path, action, str(sequence), f"{frame_num}.npy"))
+            path = os.path.join(Data_path, action, str(sequence), f"{frame_num}.npy")
+            res = np.load(path)
             window.append(res)
         sequences.append(window)
         labels.append(label_map[action])
