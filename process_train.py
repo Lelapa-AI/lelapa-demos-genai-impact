@@ -10,17 +10,32 @@ actions = np.array(["hello", "thanks", "IloveYou"])
 
 label_map = {label:num for num, label in enumerate(actions)}
 sequences, labels = [], []
+
+max_length = 1662
 for action in actions:
-    for sequence in range(30):
+    for sequence in np.array(os.listdir(os.path.join(Data_path, action))).astype(int):
         window = []
         for frame_num in range(30):
             path = os.path.join(Data_path, action, str(sequence), f"{frame_num}.npy")
             res = np.load(path)
-            window.append(res)
+            if res.shape[0] < max_length:
+                # Pad the array
+                padding = max_length - res.shape[0]
+                res_padded = np.pad(res, (0, padding), mode='constant', constant_values=0)
+            elif res.shape[0] > max_length:
+                # Truncate the array
+                res_padded = res[:max_length]
+            else:
+                res_padded = res
+            window.append(res_padded)
         sequences.append(window)
         labels.append(label_map[action])
+        
+        
+print(np.array(sequences).shape)
 
 x = np.array(sequences)
+print(x.shape)
 y = tf.keras.utils.to_categorical(labels).astype(int)
 X_train, X_test, Y_train, Y_test = train_test_split(x, y, test_size=0.05)
 
@@ -38,10 +53,10 @@ model.add(tf.keras.layers.Dense(actions.shape[0], activation='softmax'))
 res = [.7, 0.2, 0.1]
 actions[np.argmax(res)]
 model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
-model.fit(X_train, Y_train, epochs=2000, callbacks=[tb_callback])
+model.fit(X_train, Y_train, epochs=1000, callbacks=[tb_callback])
 
 res = model.predict(X_test)
-model.save('action.h5')
+model.save('action.keras')
 
 # res = model.predict(X_test)
 # actions[np.argmax(res[4])]
