@@ -148,5 +148,5 @@ def extract_keypoints(results):
 
 
 
-
-main_keypoints_extraction()
+if __name__ == "__main__":
+    main_keypoints_extraction()

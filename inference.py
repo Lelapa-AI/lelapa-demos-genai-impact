@@ -23,7 +23,7 @@ sentence = []
 predictions = []
 threshold = 0.5
 
-model =  tf.keras.models.load_model("action_detect.h5")
+model =  tf.keras.models.load_model("action_detect.keras")
 
 cap = cv2.VideoCapture(0)
 # Set mediapipe model 
