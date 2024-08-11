@@ -144,7 +144,13 @@ def extract_keypoints(results):
     lh = np.array([[res.x, res.y, res.z] for res in results.left_hand_landmarks.landmark]).flatten() if results.left_hand_landmarks else np.zeros(21*3)
     rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
     face = np.array([[res.x, res.y, res.z, res.visibility] for res in results.face_landmarks.landmark]).flatten() if results.face_landmarks else np.zeros(468*3)
-    return np.concatenate([pose, face, lh, rh])
+    combined_features = np.concatenate([pose, lh, rh, face])
+    
+    # Ensure total feature length is 1662
+    if combined_features.shape[0] != 1662:
+        print(f"Warning: Feature length is {combined_features.shape[0]}, expected 1662")
+    
+    return np.concatenate([pose[:132], face[1404], lh[:63], rh[:63]])
 
 
 

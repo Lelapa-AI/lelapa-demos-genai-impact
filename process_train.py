@@ -50,13 +50,13 @@ model.add(tf.keras.layers.Dense(64, activation='relu'))
 model.add(tf.keras.layers.Dense(32, activation='relu'))
 model.add(tf.keras.layers.Dense(actions.shape[0], activation='softmax'))
 
-res = [.7, 0.2, 0.1]
+res = [0.7, 0.2, 0.1]
 actions[np.argmax(res)]
-model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
-model.fit(X_train, Y_train, epochs=1000, callbacks=[tb_callback])
+model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.fit(X_train, Y_train, epochs=700, callbacks=[tb_callback])
 
 res = model.predict(X_test)
-model.save('action.keras')
+model.save('action3.keras')
 
 # res = model.predict(X_test)
 # actions[np.argmax(res[4])]

@@ -5,14 +5,14 @@ import numpy as np
 
 from data_collection import mediapipe_detection, extract_keypoints, draw_landmarks
 
-# colors = [(245,117,16), (117,245,16), (16,117,245)]
-# def prob_viz(res, actions, input_frame, colors):
-#     output_frame = input_frame.copy()
-#     for num, prob in enumerate(res):
-#         cv2.rectangle(output_frame, (0,60+num*40), (int(prob*100), 90+num*40), colors[num], -1)
-#         cv2.putText(output_frame, actions[num], (0, 85+num*40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
+colors = [(245,117,16), (117,245,16), (16,117,245)]
+def prob_viz(res, actions, input_frame, colors):
+    output_frame = input_frame.copy()
+    for num, prob in enumerate(res):
+        cv2.rectangle(output_frame, (0,60+num*40), (int(prob*100), 90+num*40), colors[num], -1)
+        cv2.putText(output_frame, actions[num], (0, 85+num*40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
         
-#     return output_frame
+    return output_frame
 mp_holistic = mp.solutions.mediapipe.solutions.holistic
 mp_drawing = mp.solutions.mediapipe.solutions.drawing_utils  
 
@@ -23,11 +23,12 @@ sentence = []
 predictions = []
 threshold = 0.5
 
-model =  tf.keras.models.load_model("action_detect.keras")
+model =  tf.keras.models.load_model("action3.keras")
+model.summary()
 
 cap = cv2.VideoCapture(0)
 # Set mediapipe model 
-with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
+with mp_holistic.Holistic(min_detection_confidence=0.7, min_tracking_confidence=0.5) as holistic:
     while cap.isOpened():
 
         # Read feed
@@ -42,12 +43,16 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
         
         # 2. Prediction logic
         keypoints = extract_keypoints(results)
+        # print(np.array(keypoints).shape) 
         sequence.append(keypoints)
+        # print("--------------------------------")
         sequence = sequence[-30:]
+        # print(np.array(sequence).shape)
+        
         
         if len(sequence) == 30:
             res = model.predict(np.expand_dims(sequence, axis=0))[0]
-            # print(actions[np.argmax(res)])
+            print(actions[np.argmax(res)])
             predictions.append(np.argmax(res))
             
             
@@ -74,6 +79,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                        cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
         
         # Show to screen
+        image = cv2.flip(image,1)
         cv2.imshow('OpenCV Feed', image)
 
         # Break gracefully
