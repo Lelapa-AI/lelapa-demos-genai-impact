@@ -150,7 +150,7 @@ def extract_keypoints(results):
     if combined_features.shape[0] != 1662:
         print(f"Warning: Feature length is {combined_features.shape[0]}, expected 1662")
     
-    return np.concatenate([pose[:132], face[1404], lh[:63], rh[:63]])
+    return np.concatenate([pose, face, lh, rh])
 
 
 
