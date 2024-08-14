@@ -23,7 +23,7 @@ sentence = []
 predictions = []
 threshold = 0.5
 
-model =  tf.keras.models.load_model("action3.keras")
+model =  tf.keras.models.load_model("action4.keras")
 model.summary()
 
 cap = cv2.VideoCapture(0)
@@ -87,3 +87,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.7, min_tracking_confidence=
             break
     cap.release()
     cv2.destroyAllWindows()
+    
+    
+    
+    

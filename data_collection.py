@@ -25,7 +25,7 @@ mp_holistic = mp.solutions.mediapipe.solutions.holistic
 mp_drawing = mp.solutions.mediapipe.solutions.drawing_utils    
                     
 def main_keypoints_extraction():
-    # path_creation()
+    path_creation()
     cap = cv2.VideoCapture(0)
     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
         for action in actions:
@@ -147,10 +147,10 @@ def extract_keypoints(results):
     combined_features = np.concatenate([pose, lh, rh, face])
     
     # Ensure total feature length is 1662
-    if combined_features.shape[0] != 1662:
-        print(f"Warning: Feature length is {combined_features.shape[0]}, expected 1662")
-    
-    return np.concatenate([pose, face, lh, rh])
+    # if combined_features.shape[0] != 1662:
+    print(f"Feature length is {combined_features.shape[0]}, expected 2130")
+    if combined_features.shape[0] == 2130:
+        return np.concatenate([pose, face, lh, rh])
 
 
 
