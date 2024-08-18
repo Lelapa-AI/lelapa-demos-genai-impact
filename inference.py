@@ -72,14 +72,14 @@ with mp_holistic.Holistic(min_detection_confidence=0.7, min_tracking_confidence=
                 sentence = sentence[-5:]
 
             # Viz probabilities
-            # image = prob_viz(res, actions, image, colors)
+            image = prob_viz(res, actions, image, colors)
             
         cv2.rectangle(image, (0,0), (640, 40), (245, 117, 16), -1)
         cv2.putText(image, ' '.join(sentence), (3,30), 
                        cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
         
         # Show to screen
-        image = cv2.flip(image,1)
+        # image = cv2.flip(image,1)
         cv2.imshow('OpenCV Feed', image)
 
         # Break gracefully

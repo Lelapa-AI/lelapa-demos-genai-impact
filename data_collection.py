@@ -155,4 +155,5 @@ def extract_keypoints(results):
 
 
 if __name__ == "__main__":
-    main_keypoints_extraction()
+    # main_keypoints_extraction()
+    path_creation()
