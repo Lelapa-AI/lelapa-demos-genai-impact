@@ -211,8 +211,8 @@ class RealTimePredictor:
                             #     word.append(self.sentence[-2])
                             #     # return self.sentence[-1]
                             #     break
-                if len(self.sentence) == 1:
-                    word.append(self.sentence[0])
+                if len(self.sentence) == 2:
+                    word.append(self.sentence[-1])
                     self.last_two_words_found = True
                     
                 if len(self.sentence) > 5:
