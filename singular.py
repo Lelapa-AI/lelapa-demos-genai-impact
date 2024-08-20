@@ -230,19 +230,19 @@ class RealTimePredictor:
 
 if __name__ == "__main__":
     # Define paths and parameters
-    DATA_PATH = "C:\\Users\\Sanele\\Documents\\programming\\lelapa-demos-genai-impact\\data2"
+    DATA_PATH = "/home/wtc/Desktop/Lelapa/lelapa-demos-genai-impact/data2"
     ACTIONS = np.array(['hello', 'thanks', 'iloveyou'])
     NO_SEQUENCES = 30
     SEQUENCE_LENGTH = 30
 
-    # Data Collection
+    # # Data Collection
     # collector = DataCollector(DATA_PATH, ACTIONS, NO_SEQUENCES, SEQUENCE_LENGTH)
     # collector.setup_folders()
     # collector.collect_data()
 
     # # Data Preprocessing
-    preprocessor = DataPreprocessor(DATA_PATH, ACTIONS, SEQUENCE_LENGTH)
-    X_train, X_test, y_train, y_test = preprocessor.preprocess_data()
+    # preprocessor = DataPreprocessor(DATA_PATH, ACTIONS, SEQUENCE_LENGTH)
+    # X_train, X_test, y_train, y_test = preprocessor.preprocess_data()
 
     # # Model Training
     # model_handler = ActionModel(ACTIONS)
@@ -253,7 +253,7 @@ if __name__ == "__main__":
     # model_handler.evaluate_model(X_test, y_test)
     
     model_handler = ActionModel(ACTIONS)
-    model_handler.load_model('action10.keras')  # Load the model
+    model_handler.load_model('/home/wtc/Desktop/Lelapa/lelapa-demos-genai-impact/action10.keras')  # Load the model
 
     # Real-Time Prediction
     predictor = RealTimePredictor(model_handler.model, ACTIONS)
