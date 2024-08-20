@@ -4,6 +4,7 @@ import os
 import mediapipe as mp
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
+from translation import translation
 import tensorflow as tf
 # from tensorflow.keras.utils import to_categorical
 # from tensorflow.keras.models import Sequential
@@ -14,6 +15,7 @@ from scipy import stats
 
 to_categorical = tf.keras.utils.to_categorical
 
+word = []
 class MediapipeUtils:
     def __init__(self):
         self.mp_holistic = mp.solutions.holistic
@@ -172,7 +174,7 @@ class RealTimePredictor:
         self.predictions = []
         self.threshold = 0.5
         self.colors = [(245,117,16), (117,245,16), (16,117,245)]
-
+        self.last_two_words_found = False
     def prob_viz(self, image, res, colors):
         output_frame = image.copy()
         for num, prob in enumerate(res):
@@ -205,9 +207,18 @@ class RealTimePredictor:
                                 self.sentence.append(self.actions[np.argmax(res)])
                         else:
                             self.sentence.append(self.actions[np.argmax(res)])
-
+                            # if self.sentence == 2:
+                            #     word.append(self.sentence[-2])
+                            #     # return self.sentence[-1]
+                            #     break
+                if len(self.sentence) == 1:
+                    word.append(self.sentence[0])
+                    self.last_two_words_found = True
+                    
                 if len(self.sentence) > 5:
                     self.sentence = self.sentence[-5:]
+                if self.last_two_words_found:
+                    break
 
                 image = self.prob_viz(image, res, self.colors)
 
@@ -258,3 +269,4 @@ if __name__ == "__main__":
     # Real-Time Prediction
     predictor = RealTimePredictor(model_handler.model, ACTIONS)
     predictor.predict_in_real_time()
+    translation(word[0])

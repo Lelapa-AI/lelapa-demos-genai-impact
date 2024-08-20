@@ -1,8 +1,8 @@
 from vulavula import VulavulaClient
-import wave
-import pyaudio
-import os
-import re
+# import wave
+# import pyaudio
+# import os
+# import re
 # import qfrency
 
   
@@ -73,58 +73,59 @@ def convert_lang_code(lang_code):
   }
   return lang_mapping.get(lang_code, lang_code)
 
-def get_next_synth_wav_filename():
-      # List all files in the current directory
-    files = os.listdir('.')
-    # Filter files that match the synth_wav pattern and extract numbers
-    synth_wav_files = [f for f in files if re.match(r'synthed_wav_(\d+)\.wav', f)]
-    max_number = 0
-    for file in synth_wav_files:
-        # Extract number from filename
-        number = int(re.search(r'(\d+)', file).group(0))
-        if number > max_number:
-            max_number = number
-    # Increment the highest number found by 1 for the new filename
-    new_filename = f"synthed_wav_{max_number + 1}.wav"
-    return new_filename
+# def get_next_synth_wav_filename():
+#       # List all files in the current directory
+#     files = os.listdir('.')
+#     # Filter files that match the synth_wav pattern and extract numbers
+#     synth_wav_files = [f for f in files if re.match(r'synthed_wav_(\d+)\.wav', f)]
+#     max_number = 0
+#     for file in synth_wav_files:
+#         # Extract number from filename
+#         number = int(re.search(r'(\d+)', file).group(0))
+#         if number > max_number:
+#             max_number = number
+#     # Increment the highest number found by 1 for the new filename
+#     new_filename = f"synthed_wav_{max_number + 1}.wav"
+#     return new_filename
 
-def write_wav_to_file(wav, filename):
-    p = open(filename, "wb")
-    p.write(wav)
-    p.close()
+# def write_wav_to_file(wav, filename):
+#     p = open(filename, "wb")
+#     p.write(wav)
+#     p.close()
     
 # instansiate a cloud API instance
 
-# Lelapa Hackathon Account Key
-X_ACCOUNT_KEY = "0b5091da-7a2b-476c-9b6d-517baa078ee8" # share this with Hackathon participants
+# # Lelapa Hackathon Account Key
+# X_ACCOUNT_KEY = "0b5091da-7a2b-476c-9b6d-517baa078ee8" # share this with Hackathon participants
 
-# Lelapa Hackathon API Keys
-X_API_KEY = "263a08cc-4a1e-4f3c-aef9-69b1223fe668" # share this with Hackathon participants
+# # Lelapa Hackathon API Keys
+# X_API_KEY = "263a08cc-4a1e-4f3c-aef9-69b1223fe668" # share this with Hackathon participants
 
 # cloud_api = qfrency.QfrencyCloudTTS(X_ACCOUNT_KEY, X_API_KEY)
     
+def translation(text):
+  translation_data = {
+    "input_text": f"{text}" , # this will come in from siya's mediapipe
+    "source_lang": ("eng_Latn"),
+    "target_lang": ("zul_Latn")
+  }
 
-translation_data = {
-  "input_text": "begin working now please ." , # this will come in from siya's mediapipe
-  "source_lang": ("eng_Latn"),
-  "target_lang": ("zul_Latn")
-}
+  source_lang = convert_lang_code(translation_data['source_lang'])
+  target_lang = convert_lang_code(translation_data['target_lang'])
 
-source_lang = convert_lang_code(translation_data['source_lang'])
-target_lang = convert_lang_code(translation_data['target_lang'])
+  translation_result = client.translate(translation_data)
+  spoken_text = translation_result['translation'][0]['translated_text']
 
-translation_result = client.translate(translation_data)
-spoken_text = translation_result['translation'][0]['translated_text']
+  user_gender="male"
+  user_age="adult"
 
-user_gender="male"
-user_age="adult"
-
-voice_code,sample_rate=choose_voice_code(target_lang,user_gender,user_age)
-print("Here is the voice code: ", voice_code)
-print("Here is the sample rate: ", sample_rate)
+  voice_code,sample_rate=choose_voice_code(target_lang,user_gender,user_age)
+  print("Here is the voice code: ", voice_code)
+  print("Here is the sample rate: ", sample_rate)
 
 
-print("Here is the spoken text: ", spoken_text)
+  print("Here is the spoken text: ", spoken_text)
+  print(f"Your text, '{translation_data['input_text']}' translated from {source_lang} may be translated into {target_lang} as '{ spoken_text}' ")
 # new_filename = get_next_synth_wav_filename()
 
 # synthed_wav = cloud_api.synth("zul-ZA-hmm-lindiwe", #this line represents the voice to be used. this is the voice code. 
@@ -153,8 +154,7 @@ print("Here is the spoken text: ", spoken_text)
 #   stream.stop_stream()
 #   stream.close()
 #   audio.terminate()
-
-print(f"Your text, '{translation_data['input_text']}' translated from {source_lang} may be translated into {target_lang} as '{ spoken_text}' ")
-
+if __name__ == "__main__":
+  translation("hello")
 
 
