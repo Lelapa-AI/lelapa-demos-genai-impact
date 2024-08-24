@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from data_processing import DataCollector, DataPreprocessor
 from model import ActionModel
@@ -6,7 +7,7 @@ from translation import translation
 
 if __name__ == "__main__":
     # Define paths and parameters
-    DATA_PATH = "/home/wtc/Desktop/Lelapa/lelapa-demos-genai-impact/data2"
+    DATA_PATH = os.path.join(os.getcwd(), "data")
     ACTIONS = np.array(['hello', 'thanks', 'iloveyou'])
     NO_SEQUENCES = 30
     SEQUENCE_LENGTH = 30
@@ -29,7 +30,7 @@ if __name__ == "__main__":
     # model_handler.evaluate_model(X_test, y_test)
     
     model_handler = ActionModel(ACTIONS)
-    model_handler.load_model('/home/wtc/Desktop/Lelapa/lelapa-demos-genai-impact/action10.keras')  # Load the model
+    model_handler.load_model(os.path.join(os.getcwd(), "action1.keras"))  # Load the model
 
     # Real-Time Prediction
     predictor = RealTimePredictor(model_handler.model, ACTIONS)
