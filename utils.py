@@ -35,3 +35,5 @@ class MediapipeUtils:
         self.mp_drawing.draw_landmarks(image, results.right_hand_landmarks, self.mp_holistic.HAND_CONNECTIONS,
                                         self.mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=4),
                                         self.mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2))
+
+    

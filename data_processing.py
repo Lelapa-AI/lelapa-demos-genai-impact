@@ -1,17 +1,15 @@
 import cv2
 import numpy as np
+import re
 import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
 import tensorflow as tf
-# from tensorflow.keras.utils import to_categorical
 from utils import MediapipeUtils
 to_categorical = tf.keras.utils.to_categorical
 
 
 class DataCollector:
-    
-    # new_actions = []
     
     def __init__(self, data_path, actions, no_sequences, sequence_length):
         self.data_path = data_path
@@ -75,6 +73,45 @@ class DataCollector:
         rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21 * 3)
         return np.concatenate([pose, face, lh, rh])
 
+    def new_act(file_path, list_name):
+    # Capture new elements from user input and split them by commas
+        new_elements = input("What are you trying to train (separate with commas): ").split(',')
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+
+        # modified = False
+        # Adjusted regex pattern for a numpy array
+        # pattern = fr"{list_name}\s*=\s*np\.array\(\[(.*)\]\)"
+        # pattern = fr"{list_name}\s*=\s*.*\[(.*)\].*"
+
+        
+        for i, line in enumerate(lines):
+            line = line.strip()
+            print (i,"-------\n",line[:7])
+            # match = re.match(pattern, line)
+            if line[:7] == "ACTIONS":
+            # if match:
+                current_items = 
+                print("bazinga")
+                if current_items:
+                    # Append new elements to the existing list
+                    new_list = current_items + ', ' + ', '.join(f"'{element.strip()}'" for element in new_elements)
+                else:
+                    new_list = ', '.join(f"'{element.strip()}'" for element in new_elements)
+                
+                # Replace the line with the updated list
+                lines[i] = f"{list_name} = np.array([{new_list}])\n"
+                modified = True
+                break
+
+        if not modified:
+            raise ValueError(f"List '{list_name}' not found in {file_path}.")
+
+        with open(file_path, 'w') as file:
+            file.writelines(lines)
+
+        print(f"List '{list_name}' modified successfully in {file_path}.")
+        
 class DataPreprocessor:
     def __init__(self, data_path, actions, sequence_length):
         self.data_path = data_path
@@ -99,3 +136,4 @@ class DataPreprocessor:
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05)
 
         return X_train, X_test, y_train, y_test
+
