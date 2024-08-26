@@ -13,21 +13,22 @@ if __name__ == "__main__":
     SEQUENCE_LENGTH = 30
 
     # Data Collection
-    # collector = DataCollector(DATA_PATH, ACTIONS, NO_SEQUENCES, SEQUENCE_LENGTH)
-    # collector.setup_folders()
-    # collector.collect_data()
+    collector = DataCollector(DATA_PATH, ACTIONS, NO_SEQUENCES, SEQUENCE_LENGTH,   
+                              new_actions=[])
+    collector.setup_folders()
+    collector.collect_data()
 
     # Data Preprocessing
-    # preprocessor = DataPreprocessor(DATA_PATH, ACTIONS, SEQUENCE_LENGTH)
-    # X_train, X_test, y_train, y_test = preprocessor.preprocess_data()
+    preprocessor = DataPreprocessor(DATA_PATH, ACTIONS, SEQUENCE_LENGTH)
+    X_train, X_test, y_train, y_test = preprocessor.preprocess_data()
 
     # Model Training
-    # model_handler = ActionModel(ACTIONS)
-    # model_handler.train_model(X_train, y_train)
-    # model_handler.save_model('action10.keras')
+    model_handler = ActionModel(ACTIONS)
+    model_handler.train_model(X_train, y_train)
+    model_handler.save_model('action10.keras')
 
     # Model Evaluation
-    # model_handler.evaluate_model(X_test, y_test)
+    model_handler.evaluate_model(X_test, y_test)
     
     model_handler = ActionModel(ACTIONS)
     model_handler.load_model(os.path.join(os.getcwd(), "action1.keras"))  # Load the model

@@ -9,18 +9,26 @@ from utils import MediapipeUtils
 to_categorical = tf.keras.utils.to_categorical
 
 
-
-
 class DataCollector:
+    
+    # new_actions = []
+    
     def __init__(self, data_path, actions, no_sequences, sequence_length):
         self.data_path = data_path
         self.actions = actions
         self.no_sequences = no_sequences
         self.sequence_length = sequence_length
+        self.new_actions = []
 
     def setup_folders(self):
         for action in self.actions:
-            dirmax = np.max(np.array(os.listdir(os.path.join(self.data_path, action))).astype(int), initial=0)
+            dirmax = np.max(np.array(os.listdir(os.path.join(self.data_path,
+            action))).astype(int), initial=0)
+            if os.path.exists(os.path.join(self.data_path, f"{action}")):
+                continue
+            else:
+                self.new_actions.append(action)
+
             for sequence in range(1, self.no_sequences + 1):
                 try:
                     os.makedirs(os.path.join(self.data_path, action, str(dirmax + sequence)))
@@ -31,7 +39,7 @@ class DataCollector:
         cap = cv2.VideoCapture(0)
         utils = MediapipeUtils()
 
-        for action in self.actions:
+        for action in self.new_actions:
             for sequence in range(1, self.no_sequences + 1):
                 for frame_num in range(self.sequence_length):
                     ret, frame = cap.read()
