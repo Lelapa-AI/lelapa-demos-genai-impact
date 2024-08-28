@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import re
 import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
@@ -20,18 +19,18 @@ class DataCollector:
 
     def setup_folders(self):
         for action in self.actions:
-            dirmax = np.max(np.array(os.listdir(os.path.join(self.data_path,
-            action))).astype(int), initial=0)
+            
             if os.path.exists(os.path.join(self.data_path, f"{action}")):
                 continue
             else:
                 self.new_actions.append(action)
-
-            for sequence in range(1, self.no_sequences + 1):
-                try:
-                    os.makedirs(os.path.join(self.data_path, action, str(dirmax + sequence)))
-                except FileExistsError:
-                    pass
+                dirmax = np.max(np.array(os.listdir(os.path.join(self.data_path,
+                self.new_actions))).astype(int), initial=0)
+                for sequence in range(1, self.no_sequences + 1):
+                    try:
+                        os.makedirs(os.path.join(self.data_path, self.new_actions, str(dirmax + sequence)))
+                    except FileExistsError:
+                        pass
 
     def collect_data(self):
         cap = cv2.VideoCapture(0)
@@ -93,8 +92,6 @@ class DataCollector:
 
         else:
             raise ValueError(f"List '{list_name}' not found in {file_path}.")
-
-        
         
 class DataPreprocessor:
     def __init__(self, data_path, actions, sequence_length):
