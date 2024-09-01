@@ -17,7 +17,6 @@ if __name__ == "__main__":
     determine_action = input("Are you training the model (Yes/No)").lower()
     if determine_action[0] == "y":
         
-
         # Data Collection
         collector = DataCollector(DATA_PATH, ACTIONS, NO_SEQUENCES, SEQUENCE_LENGTH)
         collector.setup_folders()
@@ -35,12 +34,11 @@ if __name__ == "__main__":
         # Model Evaluation
         model_handler.evaluate_model(X_test, y_test)
     
-        model_handler = ActionModel(ACTIONS)
-        model_handler.load_model(os.path.join(os.getcwd(), "action1.keras"))  # Load the model
-        
     else:
 
         # Real-Time Prediction
+        model_handler = ActionModel(ACTIONS)
+        model_handler.load_model(os.path.join(os.getcwd(), "action1.keras"))  # Load the model
         predictor = RealTimePredictor(model_handler.model, ACTIONS)
         predictor.predict_in_real_time()
         word = predictor.get_word()
