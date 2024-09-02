@@ -8,7 +8,7 @@ from translation import translation
 if __name__ == "__main__":
     # Define paths and parameters
     DATA_PATH = os.path.join(os.getcwd(), "data")
-    ACTIONSS = ['hello', 'thanks', 'iloveyou']
+    ACTIONSS = ['hello', 'thanks', 'i love you']
     ACTIONS = np.array(ACTIONSS)
     NO_SEQUENCES = 30
     SEQUENCE_LENGTH = 30
