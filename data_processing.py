@@ -73,7 +73,7 @@ class DataCollector:
         return np.concatenate([pose, face, lh, rh])
 
     def new_act(file_path, list_name):
-        new_elements = input("What are you trying to train : ")
+        new_elements = input("What are you trying to train : ").lower().strip()
         with open(file_path, 'r') as file:
             lines = file.readlines()
 
