@@ -1,6 +1,4 @@
 import os
-if True:
-    print(7)
 import numpy as np
 from data_processing import DataCollector, DataPreprocessor
 # from model import ActionModel
@@ -9,9 +7,10 @@ from data_processing import DataCollector, DataPreprocessor
 
 if __name__ == "__main__":
     # Define paths and parameters
-    # DataCollector.new_act(os.path.join(os.getcwd(), "main.py"), "ACTIONS")
+    DataCollector.new_act(os.path.join(os.getcwd(), "main.py"), "ACTIONS")
     DATA_PATH = os.path.join(os.getcwd(), "data")
-    ACTIONS = np.array(['hello', 'thanks', 'iloveyou'])
+    ACTIONSS = ['hello', 'thanks', 'iloveyou']
+    ACTIONS = np.array(ACTIONSS)
     NO_SEQUENCES = 30
     SEQUENCE_LENGTH = 30
 

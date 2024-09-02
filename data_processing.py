@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import re
 import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
@@ -20,18 +19,18 @@ class DataCollector:
 
     def setup_folders(self):
         for action in self.actions:
-            dirmax = np.max(np.array(os.listdir(os.path.join(self.data_path,
-            action))).astype(int), initial=0)
+            
             if os.path.exists(os.path.join(self.data_path, f"{action}")):
                 continue
             else:
                 self.new_actions.append(action)
-
-            for sequence in range(1, self.no_sequences + 1):
-                try:
-                    os.makedirs(os.path.join(self.data_path, action, str(dirmax + sequence)))
-                except FileExistsError:
-                    pass
+                dirmax = np.max(np.array(os.listdir(os.path.join(self.data_path,
+                self.new_actions))).astype(int), initial=0)
+                for sequence in range(1, self.no_sequences + 1):
+                    try:
+                        os.makedirs(os.path.join(self.data_path, self.new_actions, str(dirmax + sequence)))
+                    except FileExistsError:
+                        pass
 
     def collect_data(self):
         cap = cv2.VideoCapture(0)
@@ -74,43 +73,25 @@ class DataCollector:
         return np.concatenate([pose, face, lh, rh])
 
     def new_act(file_path, list_name):
-    # Capture new elements from user input and split them by commas
-        new_elements = input("What are you trying to train (separate with commas): ").split(',')
+        new_elements = input("What are you trying to train : ")
         with open(file_path, 'r') as file:
             lines = file.readlines()
 
-        # modified = False
-        # Adjusted regex pattern for a numpy array
-        # pattern = fr"{list_name}\s*=\s*np\.array\(\[(.*)\]\)"
-        # pattern = fr"{list_name}\s*=\s*.*\[(.*)\].*"
-
-        
+        modified = False
         for i, line in enumerate(lines):
             line = line.strip()
-            print (i,"-------\n",line[:7])
-            # match = re.match(pattern, line)
-            if line[:7] == "ACTIONS":
-            # if match:
-                current_items = 
-                print("bazinga")
-                if current_items:
-                    # Append new elements to the existing list
-                    new_list = current_items + ', ' + ', '.join(f"'{element.strip()}'" for element in new_elements)
-                else:
-                    new_list = ', '.join(f"'{element.strip()}'" for element in new_elements)
-                
-                # Replace the line with the updated list
-                lines[i] = f"{list_name} = np.array([{new_list}])\n"
+            if line[:8] == "ACTIONSS":
+                lines[i] = "    " + line[:-1] + ", " + "'" + f"{new_elements}" + "'" + "]\n"
                 modified = True
                 break
+         
+        if modified:
+            with open(file_path, 'w') as file:
+                file.writelines(lines)
+            print(f"List '{list_name}' modified successfully in {file_path}.")
 
-        if not modified:
+        else:
             raise ValueError(f"List '{list_name}' not found in {file_path}.")
-
-        with open(file_path, 'w') as file:
-            file.writelines(lines)
-
-        print(f"List '{list_name}' modified successfully in {file_path}.")
         
 class DataPreprocessor:
     def __init__(self, data_path, actions, sequence_length):
