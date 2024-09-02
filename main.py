@@ -7,16 +7,16 @@ from translation import translation
 
 if __name__ == "__main__":
     # Define paths and parameters
-    DataCollector.new_act(os.path.join(os.getcwd(), "main.py"), "ACTIONS")
     DATA_PATH = os.path.join(os.getcwd(), "data")
     ACTIONSS = ['hello', 'thanks', 'iloveyou']
     ACTIONS = np.array(ACTIONSS)
     NO_SEQUENCES = 30
     SEQUENCE_LENGTH = 30
     
-    determine_action = input("Are you training the model (Yes/No)").lower()
+    determine_action = input("Are you training the model (Yes/No)").lower().strip()
     if determine_action[0] == "y":
         
+        DataCollector.new_act(os.path.join(os.getcwd(), "main.py"), "ACTIONS")
         # Data Collection
         collector = DataCollector(DATA_PATH, ACTIONS, NO_SEQUENCES, SEQUENCE_LENGTH)
         collector.setup_folders()
