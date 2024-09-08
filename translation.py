@@ -1,4 +1,5 @@
 from vulavula import VulavulaClient
+import pyttsx3
 # import wave
 # import pyaudio
 # import os
@@ -54,8 +55,6 @@ def choose_voice_code(target_lang, user_gender, user_age):
     # Return None if no match is found
     return None, None
 
-# Example usage
-
     
       
 def convert_lang_code(lang_code):
@@ -72,37 +71,25 @@ def convert_lang_code(lang_code):
     "swh_Latn": "swahili"
   }
   return lang_mapping.get(lang_code, lang_code)
-
-# def get_next_synth_wav_filename():
-#       # List all files in the current directory
-#     files = os.listdir('.')
-#     # Filter files that match the synth_wav pattern and extract numbers
-#     synth_wav_files = [f for f in files if re.match(r'synthed_wav_(\d+)\.wav', f)]
-#     max_number = 0
-#     for file in synth_wav_files:
-#         # Extract number from filename
-#         number = int(re.search(r'(\d+)', file).group(0))
-#         if number > max_number:
-#             max_number = number
-#     # Increment the highest number found by 1 for the new filename
-#     new_filename = f"synthed_wav_{max_number + 1}.wav"
-#     return new_filename
-
-# def write_wav_to_file(wav, filename):
-#     p = open(filename, "wb")
-#     p.write(wav)
-#     p.close()
     
-# instansiate a cloud API instance
-
-# # Lelapa Hackathon Account Key
-# X_ACCOUNT_KEY = "0b5091da-7a2b-476c-9b6d-517baa078ee8" # share this with Hackathon participants
-
-# # Lelapa Hackathon API Keys
-# X_API_KEY = "263a08cc-4a1e-4f3c-aef9-69b1223fe668" # share this with Hackathon participants
-
-# cloud_api = qfrency.QfrencyCloudTTS(X_ACCOUNT_KEY, X_API_KEY)
+def text_to_speech(text, language='en'):
+    engine = pyttsx3.init()
     
+    # Set properties
+    engine.setProperty('rate', 150)  # Speed of speech
+    engine.setProperty('volume', 0.9)  # Volume (0.0 to 1.0)
+    
+    # Set language (if available)
+    voices = engine.getProperty('voices')
+    for voice in voices:
+        if language in voice.languages:
+            engine.setProperty('voice', voice.id)
+            break
+    
+    # Speak the text
+    engine.say(text)
+    engine.runAndWait()
+
 def translation(text):
   translation_data = {
     "input_text": f"{text}" , # this will come in from siya's mediapipe
@@ -126,34 +113,9 @@ def translation(text):
 
   print("Here is the spoken text: ", spoken_text)
   print(f"Your text, '{translation_data['input_text']}' translated from {source_lang} may be translated into {target_lang} as '{ spoken_text}' ")
-# new_filename = get_next_synth_wav_filename()
 
-# synthed_wav = cloud_api.synth("zul-ZA-hmm-lindiwe", #this line represents the voice to be used. this is the voice code. 
-#                                 spoken_text, #this line represents the spoken text to be created
-#                                 {"sample-rate" :16000}) #ensure this line matches the sample rate of the voice code.
-# write_wav_to_file(synthed_wav, new_filename)
-
-# Open the WAV file
-# with wave.open(new_filename, 'rb') as wav_file:
-#   # Create an instance of the PyAudio class
-#   audio = pyaudio.PyAudio()
-
-#   # Open a stream to play the WAV file
-#   stream = audio.open(format=audio.get_format_from_width(wav_file.getsampwidth()),
-#             channels=wav_file.getnchannels(),
-#             rate=wav_file.getframerate(),
-#             output=True)
-
-#   # Read the data from the WAV file and play it
-#   data = wav_file.readframes(1024)
-#   while data:
-#     stream.write(data)
-#     data = wav_file.readframes(1024)
-
-#   # Close the stream and terminate PyAudio
-#   stream.stop_stream()
-#   stream.close()
-#   audio.terminate()
+  text_to_speech(spoken_text, target_lang)
+  
 if __name__ == "__main__":
   translation("hello")
 

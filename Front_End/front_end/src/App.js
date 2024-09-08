@@ -12,6 +12,7 @@ function ParticipantView(props) {
   const micRef = useRef(null);
   const { webcamStream, micStream, webcamOn, micOn, isLocal, displayName } =
     useParticipant(props.participantId);
+
   const videoStream = useMemo(() => {
     if (webcamOn && webcamStream) {
       const mediaStream = new MediaStream();
@@ -19,11 +20,14 @@ function ParticipantView(props) {
       return mediaStream;
     }
   }, [webcamStream, webcamOn]);
+
+  //Playing the audio in the <audio>
   useEffect(() => {
     if (micRef.current) {
       if (micOn && micStream) {
         const mediaStream = new MediaStream();
         mediaStream.addTrack(micStream.track);
+
         micRef.current.srcObject = mediaStream;
         micRef.current
           .play()
@@ -35,18 +39,26 @@ function ParticipantView(props) {
       }
     }
   }, [micStream, micOn]);
+
   return (
     <div>
+      <p>
+        Participant: {displayName} | Webcam: {webcamOn ? "ON" : "OFF"} | Mic:{" "}
+        {micOn ? "ON" : "OFF"}
+      </p>
       <audio ref={micRef} autoPlay playsInline muted={isLocal} />
       {webcamOn && (
         <ReactPlayer
-          playsinline // very very imp prop
+          //
+          playsinline // extremely crucial prop
           pip={false}
           light={false}
           controls={false}
           muted={true}
           playing={true}
+          //
           url={videoStream}
+          //
           height={"300px"}
           width={"300px"}
           onError={(err) => {
@@ -58,58 +70,35 @@ function ParticipantView(props) {
   );
 }
 function Controls() {
-  const { hlsState, startHls, stopHls } = useMeeting();
-  const _handleHLS = () => {
-    console.log("hlsState", hlsState);
-    if (!hlsState || hlsState === "HLS_STOPPED") {
-      startHls({
-        layout: {
-          type: "SPOTLIGHT",
-          priority: "PIN",
-          gridSize: 4,
-        },
-        theme: "DARK",
-        orientation: "landscape",
-      });
-    } else if (hlsState === "HLS_STARTED" || hlsState === "HLS_PLAYABLE") {
-      stopHls();
-    }
-  };
+  const { leave, toggleMic, toggleWebcam, startHls, stopHls } = useMeeting();
   return (
-    <>
-      {hlsState === "HLS_STARTED" ||
-      hlsState === "HLS_STOPPING" ||
-      hlsState === "HLS_STARTING" ||
-      hlsState === "HLS_PLAYABLE" ? (
-        <button
-          onClick={() => {
-            _handleHLS();
-          }}
-          style={{
-            backgroundColor: "#FF5D5D",
-          }}
-        >
-          {hlsState === "HLS_STARTED"
-            ? "Live Starting"
-            : hlsState === "HLS_STOPPING"
-            ? "Live Stopping"
-            : hlsState === "HLS_PLAYABLE"
-            ? "Stop Live"
-            : "Loading..."}
-        </button>
-      ) : (
-        <button
-          onClick={() => {
-            _handleHLS();
-          }}
-          style={{
-            backgroundColor: "#FF5D5D",
-          }}
-        >
-          Go Live
-        </button>
-      )}
-    </>
+    <div>
+      <button onClick={() => leave()}>Leave</button>
+      &emsp;|&emsp;
+      <button onClick={() => toggleMic()}>toggleMic</button>
+      <button onClick={() => toggleWebcam()}>toggleWebcam</button>
+      &emsp;|&emsp;
+      <button
+        onClick={() => {
+          //Start the HLS in SPOTLIGHT mode and PIN as
+          //priority so only speakers are visible in the HLS stream
+          startHls({
+            layout: {
+              type: "SPOTLIGHT",
+              priority: "PIN",
+              gridSize: "20",
+            },
+            theme: "LIGHT",
+            mode: "video-and-audio",
+            quality: "high",
+            orientation: "landscape",
+          });
+        }}
+      >
+        Start HLS
+      </button>
+      <button onClick={() => stopHls()}>Stop HLS</button>
+    </div>
   );
 }
 function SpeakerView() {
