@@ -66,9 +66,9 @@ class RealTimePredictor:
                                 time.sleep(5)
                                 #     break
                                 
-                    if len(self.sentence) == 2:
-                        self.word.append(self.sentence[-1])
-                        self.last_two_words_found = True
+                    # if len(self.sentence) == 2:
+                    #     self.word.append(self.sentence[-1])
+                    #     self.last_two_words_found = True
                         
                     if len(self.sentence) > 5:
                         self.sentence = self.sentence[-5:]
