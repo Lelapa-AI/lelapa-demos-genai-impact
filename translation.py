@@ -41,7 +41,7 @@ female_voices = [{'voice-code': 'afr-ZA-dnn-maryna', 'name': 'Maryna', 'descript
                  {'voice-code': 'zul-ZA-dnn-lindiwe', 'name': 'Lindiwe', 'description': 'isiZulu female voice with neural acoustic and vocoder models', 'technique': 'DNN', 'language': 'isizulu', 'lang-code': 'zul', 'country-code': 'ZA', 'gender': 'female', 'age': 'adult', 'sample-rate': 22050},
                  {'voice-code': 'zul-ZA-hmm-lindiwe', 'name': 'Lindiwe', 'description': 'isiZulu female voice with HMM acoustic models and mixed-excitation vocoder', 'technique': 'HMM', 'language': 'isizulu', 'lang-code': 'zul', 'country-code': 'ZA', 'gender': 'female', 'age': 'adult', 'sample-rate': 16000}]
 
-client = VulavulaClient("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU1MzhhMGIzYzNmMDQwMzVhMDNjODhkNmQ2MDlkNWJkIiwiY2xpZW50X2lkIjozNiwicmVxdWVzdHNfcGVyX21pbnV0ZSI6MCwibGFzdF9yZXF1ZXN0X3RpbWUiOm51bGx9.C6St-QkEFO-xtrotnOiXt9AnyHauxTAhzuv-bhGWq5E")
+client = VulavulaClient("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI5OWMxOWQ5NmJjYzQzNzU4MjQ5ZDhkOTk5ZTE1N2MxIiwiY2xpZW50X2lkIjoyNzcsInJlcXVlc3RzX3Blcl9taW51dGUiOjAsImxhc3RfcmVxdWVzdF90aW1lIjpudWxsfQ.wWkLvpTD0nM1WW2BrZ8_S3dx8E2uLxd_JRO-VETFYxA")
 
 def choose_voice_code(target_lang, user_gender, user_age):
     # Combine male and female voices into one list
@@ -52,8 +52,6 @@ def choose_voice_code(target_lang, user_gender, user_age):
         if voice['language'] == target_lang and voice['gender'] == user_gender and voice['age'] == user_age:
             return voice['voice-code'], voice['sample-rate']
     
-    # Return None if no match is found
-    return None, None
 
     
       
@@ -72,7 +70,7 @@ def convert_lang_code(lang_code):
   }
   return lang_mapping.get(lang_code, lang_code)
     
-def text_to_speech(text, language='en'):
+def text_to_speech(text, language='zu_ZA'):
     engine = pyttsx3.init()
     
     # Set properties
@@ -81,10 +79,14 @@ def text_to_speech(text, language='en'):
     
     # Set language (if available)
     voices = engine.getProperty('voices')
+    language_set = False
     for voice in voices:
         if language in voice.languages:
             engine.setProperty('voice', voice.id)
-            break
+            language_set = True
+
+    if not language_set:
+        print(f"Language '{language}' not available. Using default voice.")
     
     # Speak the text
     engine.say(text)
