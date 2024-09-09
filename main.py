@@ -19,13 +19,13 @@ if __name__ == "__main__":
     determine_action = input("Are you training the model (Yes/No)").lower().strip()
     if determine_action[0] == "y":
         
-        DataCollector.new_act(os.path.join(os.getcwd(), "actions.py"), "ACTIONSS")
-        # Data Collection
-        importlib.reload(actions)
-        ACTIONSS = np.array(actions.ACTIONSS)
-        collector = DataCollector(DATA_PATH, ACTIONSS, NO_SEQUENCES, SEQUENCE_LENGTH)
-        collector.setup_folders()
-        collector.collect_data()
+        # DataCollector.new_act(os.path.join(os.getcwd(), "actions.py"), "ACTIONSS")
+        # # Data Collection
+        # importlib.reload(actions)
+        # ACTIONSS = np.array(actions.ACTIONSS)
+        # collector = DataCollector(DATA_PATH, ACTIONSS, NO_SEQUENCES, SEQUENCE_LENGTH)
+        # collector.setup_folders()
+        # collector.collect_data()
 
         # Data Preprocessing
         preprocessor = DataPreprocessor(DATA_PATH, ACTIONSS, SEQUENCE_LENGTH)

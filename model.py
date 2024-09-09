@@ -20,7 +20,7 @@ class ActionModel:
         model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['categorical_accuracy'])
         return model
 
-    def train_model(self, X_train, y_train, epochs=250):
+    def train_model(self, X_train, y_train, epochs=150):
         log_dir = os.path.join('Logs')
         tb_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
         self.model.fit(X_train, y_train, epochs=epochs, callbacks=[tb_callback])
