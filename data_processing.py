@@ -24,11 +24,12 @@ class DataCollector:
                 continue
             else:
                 self.new_actions.append(action)
-                dirmax = np.max(np.array(os.listdir(os.path.join(self.data_path,
-                self.new_actions))).astype(int), initial=0)
                 for sequence in range(1, self.no_sequences + 1):
                     try:
-                        os.makedirs(os.path.join(self.data_path, self.new_actions, str(dirmax + sequence)))
+                        # os.makedirs(os.path.join(self.data_path, action, str(sequence)))
+                        # dirmax = np.max(np.array(os.listdir(os.path.join(self.data_path,
+                        # action))).astype(int), initial=0)
+                        os.makedirs(os.path.join(self.data_path, action, str(sequence)))
                     except FileExistsError:
                         pass
 
@@ -81,7 +82,7 @@ class DataCollector:
         for i, line in enumerate(lines):
             line = line.strip()
             if line[:8] == "ACTIONSS":
-                lines[i] = "    " + line[:-1] + ", " + "'" + f"{new_elements}" + "'" + "]\n"
+                lines[i] = line[:-1] + ", " + "'" + f"{new_elements}" + "'" + "]\n"
                 modified = True
                 break
          

@@ -57,8 +57,8 @@ class RealTimePredictor:
                     
                 if len(self.sentence) > 5:
                     self.sentence = self.sentence[-5:]
-                if self.last_two_words_found:
-                    break
+                # if self.last_two_words_found:
+                #     break
 
                 image = self.prob_viz(image, res, self.colors)
 

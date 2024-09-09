@@ -116,7 +116,7 @@ def translation(text):
 
   text_to_speech(spoken_text, target_lang)
   
-if __name__ == "__main__":
-  translation("hello")
+# if __name__ == "__main__":
+#   translation("hello")
 
 
