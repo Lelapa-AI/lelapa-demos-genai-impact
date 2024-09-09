@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
 from utils import MediapipeUtils
+import time
+import translation
+from vulavula.common.error_handler import VulavulaError
 
 # word = []
 class RealTimePredictor:
@@ -14,6 +17,7 @@ class RealTimePredictor:
         self.colors = [(245,117,16), (117,245,16), (16,117,245), (192, 192, 192)]
         self.last_two_words_found = False
         self.word = []
+        self.paused = False
 
     def prob_viz(self, image, res, colors):
         output_frame = image.copy()
@@ -31,36 +35,46 @@ class RealTimePredictor:
             image, results = utils.mediapipe_detection(frame)
             utils.draw_styled_landmarks(image, results)
 
-            keypoints = self.extract_keypoints(results)
-            self.sequence.append(keypoints)
-            self.sequence = self.sequence[-30:]
+            if not self.paused:
+                keypoints = self.extract_keypoints(results)
+                self.sequence.append(keypoints)
+                self.sequence = self.sequence[-30:]
 
-            if len(self.sequence) == 30:
-                res = self.model.predict(np.expand_dims(self.sequence, axis=0))[0]
-                print(self.actions[np.argmax(res)])
-                self.predictions.append(np.argmax(res))
+                if len(self.sequence) == 30:
+                    res = self.model.predict(np.expand_dims(self.sequence, axis=0))[0]
+                    print(self.actions[np.argmax(res)])
+                    self.predictions.append(np.argmax(res))
 
-                if np.unique(self.predictions[-10:])[0] == np.argmax(res):
-                    if res[np.argmax(res)] > self.threshold:
-                        if len(self.sentence) > 0:
-                            if self.actions[np.argmax(res)] != self.sentence[-1]:
+                    if np.unique(self.predictions[-10:])[0] == np.argmax(res):
+                        if res[np.argmax(res)] > self.threshold:
+                            if len(self.sentence) > 0:
+                                if self.actions[np.argmax(res)] != self.sentence[-1]:
+                                    self.sentence.append(self.actions[np.argmax(res)])
+                            else:
                                 self.sentence.append(self.actions[np.argmax(res)])
-                        else:
-                            self.sentence.append(self.actions[np.argmax(res)])
-                            # if self.sentence == 2:
-                            #     word.append(self.sentence[-2])
-                            #     # return self.sentence[-1]
-                            #     break
-                if len(self.sentence) == 2:
-                    self.word.append(self.sentence[-1])
-                    self.last_two_words_found = True
-                    
-                if len(self.sentence) > 5:
-                    self.sentence = self.sentence[-5:]
-                # if self.last_two_words_found:
-                #     break
+                                # if self.sentence == 1:
+                                self.word.append(self.sentence[-2])
+                                word =  self.sentence[-1]
+                                
+                                try:
+                                    translation(word[0])
+                                except VulavulaError as e:
+                                    if '429' in str(e):
+                                        print("API call limit exceeded. Please use a new API key or contact support to upgrade your plan.")
+                                    else:
+                                        print(f"An error occurred: {e}")
+                                time.sleep(5)
+                                #     break
+                    if len(self.sentence) == 2:
+                        self.word.append(self.sentence[-1])
+                        self.last_two_words_found = True
+                        
+                    if len(self.sentence) > 5:
+                        self.sentence = self.sentence[-5:]
+                    # if self.last_two_words_found:
+                    #     break
 
-                image = self.prob_viz(image, res, self.colors)
+                    image = self.prob_viz(image, res, self.colors)
 
             cv2.rectangle(image, (0, 0), (640, 40), (245, 117, 16), -1)
             cv2.putText(image, ' '.join(self.sentence), (3, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
