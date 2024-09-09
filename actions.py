@@ -1,1 +1,1 @@
-ACTIONSS = ['iloveyou', 'hello', 'thanks']
+ACTIONSS = ['iloveyou', 'hello', 'thanks', 'goodbye']

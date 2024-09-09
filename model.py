@@ -16,11 +16,11 @@ class ActionModel:
         model.add(tf.keras.layers.Dense(64, activation='relu'))
         model.add(tf.keras.layers.Dense(32, activation='relu'))
         model.add(tf.keras.layers.Dense(len(self.actions), activation='softmax'))
-        optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=0.0002)
         model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['categorical_accuracy'])
         return model
 
-    def train_model(self, X_train, y_train, epochs=100):
+    def train_model(self, X_train, y_train, epochs=250):
         log_dir = os.path.join('Logs')
         tb_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
         self.model.fit(X_train, y_train, epochs=epochs, callbacks=[tb_callback])

@@ -34,7 +34,7 @@ if __name__ == "__main__":
         # Model Training
         model_handler = ActionModel(ACTIONSS)
         model_handler.train_model(X_train, y_train)
-        model_handler.save_model('action3.keras')
+        model_handler.save_model('action4.keras')
 
         # Model Evaluation
         model_handler.evaluate_model(X_test, y_test)
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     else:
         #Real-time prediction
         model_handler = ActionModel(ACTIONSS)
-        model_handler.load_model(os.path.join(os.getcwd(), "action3.keras"))  # Load the model
+        model_handler.load_model(os.path.join(os.getcwd(), "action4.keras"))  # Load the model
         predictor = RealTimePredictor(model_handler.model, ACTIONSS)
         predictor.predict_in_real_time()
         word = predictor.get_word()

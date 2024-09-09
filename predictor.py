@@ -10,8 +10,8 @@ class RealTimePredictor:
         self.sequence = []
         self.sentence = []
         self.predictions = []
-        self.threshold = 0.5
-        self.colors = [(245,117,16), (117,245,16), (16,117,245)]
+        self.threshold = 0.69
+        self.colors = [(245,117,16), (117,245,16), (16,117,245), (192, 192, 192)]
         self.last_two_words_found = False
         self.word = []
 
