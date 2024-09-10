@@ -32,7 +32,7 @@ Any other dependencies listed in requirements.txt
 Usage
 Prepare the Model: Ensure you have a trained model saved as action4.keras. You can train your model by following the steps in the if __name__ == "__main__": block in the code.
 
-Run the Predictor: Execute the main script to start real-time action prediction:
+Run the Predictor: Execute the main.py script to start real-time action prediction:
 
 bash
 Copy code
