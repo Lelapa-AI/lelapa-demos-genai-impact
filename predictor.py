@@ -1,11 +1,11 @@
 import cv2
 import numpy as np
+import threading
 from utils import MediapipeUtils
 import time
-import translation
+from translation import translation
 from vulavula.common.error_handler import VulavulaError
 
-# word = []
 class RealTimePredictor:
     def __init__(self, model, actions):
         self.model = model
@@ -14,10 +14,12 @@ class RealTimePredictor:
         self.sentence = []
         self.predictions = []
         self.threshold = 0.5
-        self.colors = [(245,117,16), (117,245,16), (16,117,245), (192, 192, 192)]
+        self.colors = [(245, 117, 16), (117, 245, 16), (16, 117, 245), (192, 192, 192)]
         self.last_two_words_found = False
         self.word = []
         self.paused = False
+        self.last_prediction_time = time.time()
+        self.pause_duration = 5  # Duration in seconds
 
     def prob_viz(self, image, res, colors):
         output_frame = image.copy()
@@ -26,12 +28,22 @@ class RealTimePredictor:
             cv2.putText(output_frame, self.actions[num], (0, 85 + num * 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
         return output_frame
 
+    def countdown_thread(self):
+        while self.paused:
+            if time.time() - self.last_prediction_time >= self.pause_duration:
+                self.paused = False
+            time.sleep(0.1)
+
     def predict_in_real_time(self):
         cap = cv2.VideoCapture(0)
         utils = MediapipeUtils()
 
-        while cap.isOpened():
+        while True:
+            
             ret, frame = cap.read()
+            if not ret:
+                break
+
             image, results = utils.mediapipe_detection(frame)
             utils.draw_styled_landmarks(image, results)
 
@@ -52,28 +64,23 @@ class RealTimePredictor:
                                     self.sentence.append(self.actions[np.argmax(res)])
                             else:
                                 self.sentence.append(self.actions[np.argmax(res)])
-                                # if self.sentence == 1:
-                                self.word.append(self.sentence[-2])
-                            key_word =  self.sentence[-1]
-                                
+                            self.word.append(self.sentence[-1])
+                            key_word = self.sentence[-1]
+
                             try:
                                 translation(key_word)
                             except VulavulaError as e:
                                 if '429' in str(e):
-                                    print("API call limit exceeded. Please use a new API key or contact support to upgrade your plan.")
+                                    print("API call limit exceeded. Please use a new API key or contact support.")
                                 else:
                                     print(f"An error occurred: {e}")
-                            time.sleep(5)
-                            #     break
-                                
-                    # if len(self.sentence) == 2:
-                    #     self.word.append(self.sentence[-1])
-                    #     self.last_two_words_found = True
-                        
+
+                            self.paused = True
+                            self.last_prediction_time = time.time()
+                            threading.Thread(target=self.countdown_thread).start()
+
                     if len(self.sentence) > 5:
                         self.sentence = self.sentence[-5:]
-                    # if self.last_two_words_found:
-                    #     break
 
                     image = self.prob_viz(image, res, self.colors)
 
@@ -93,6 +100,6 @@ class RealTimePredictor:
         lh = np.array([[res.x, res.y, res.z] for res in results.left_hand_landmarks.landmark]).flatten() if results.left_hand_landmarks else np.zeros(21 * 3)
         rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21 * 3)
         return np.concatenate([pose, face, lh, rh])
-    
+
     def get_word(self):
         return self.word

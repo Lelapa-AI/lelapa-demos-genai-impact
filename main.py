@@ -16,8 +16,8 @@ if __name__ == "__main__":
     NO_SEQUENCES = 30
     SEQUENCE_LENGTH = 30
     
-    determine_action = input("Are you training the model (Yes/No)").lower().strip()
-    if determine_action[0] == "y":
+    # determine_action = input("Are you training the model (Yes/No)").lower().strip()
+    # if determine_action[0] == "y":
         
         # DataCollector.new_act(os.path.join(os.getcwd(), "actions.py"), "ACTIONSS")
         # # Data Collection
@@ -27,30 +27,30 @@ if __name__ == "__main__":
         # collector.setup_folders()
         # collector.collect_data()
 
-        # Data Preprocessing
-        preprocessor = DataPreprocessor(DATA_PATH, ACTIONSS, SEQUENCE_LENGTH)
-        X_train, X_test, y_train, y_test = preprocessor.preprocess_data()
+        # # Data Preprocessing
+        # preprocessor = DataPreprocessor(DATA_PATH, ACTIONSS, SEQUENCE_LENGTH)
+        # X_train, X_test, y_train, y_test = preprocessor.preprocess_data()
 
-        # Model Training
-        model_handler = ActionModel(ACTIONSS)
-        model_handler.train_model(X_train, y_train)
-        model_handler.save_model('action4.keras')
+        # # Model Training
+        # model_handler = ActionModel(ACTIONSS)
+        # model_handler.train_model(X_train, y_train)
+        # model_handler.save_model('action4.keras')
 
-        # Model Evaluation
-        model_handler.evaluate_model(X_test, y_test)
+        # # Model Evaluation
+        # model_handler.evaluate_model(X_test, y_test)
     
-    else:
+    # else:
         #Real-time prediction
-        model_handler = ActionModel(ACTIONSS)
-        model_handler.load_model(os.path.join(os.getcwd(), "action4.keras"))  # Load the model
-        predictor = RealTimePredictor(model_handler.model, ACTIONSS)
-        predictor.predict_in_real_time()
-        word = predictor.get_word()
+    model_handler = ActionModel(ACTIONSS)
+    model_handler.load_model(os.path.join(os.getcwd(), "action4.keras"))  # Load the model
+    predictor = RealTimePredictor(model_handler.model, ACTIONSS)
+    predictor.predict_in_real_time()
+        # word = predictor.get_word()
 
-        try:
-            translation(word[0])
-        except VulavulaError as e:
-            if '429' in str(e):
-                print("API call limit exceeded. Please use a new API key or contact support to upgrade your plan.")
-            else:
-                print(f"An error occurred: {e}")
+        # try:
+        #     translation(word[0])
+        # except VulavulaError as e:
+        #     if '429' in str(e):
+        #         print("API call limit exceeded. Please use a new API key or contact support to upgrade your plan.")
+        #     else:
+        #         print(f"An error occurred: {e}")
