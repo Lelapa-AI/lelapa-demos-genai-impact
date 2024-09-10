@@ -54,17 +54,17 @@ class RealTimePredictor:
                                 self.sentence.append(self.actions[np.argmax(res)])
                                 # if self.sentence == 1:
                                 self.word.append(self.sentence[-2])
-                                key_word =  self.sentence[-1]
+                            key_word =  self.sentence[-1]
                                 
-                                try:
-                                    translation(key_word)
-                                except VulavulaError as e:
-                                    if '429' in str(e):
-                                        print("API call limit exceeded. Please use a new API key or contact support to upgrade your plan.")
-                                    else:
-                                        print(f"An error occurred: {e}")
-                                time.sleep(5)
-                                #     break
+                            try:
+                                translation(key_word)
+                            except VulavulaError as e:
+                                if '429' in str(e):
+                                    print("API call limit exceeded. Please use a new API key or contact support to upgrade your plan.")
+                                else:
+                                    print(f"An error occurred: {e}")
+                            time.sleep(5)
+                            #     break
                                 
                     # if len(self.sentence) == 2:
                     #     self.word.append(self.sentence[-1])
