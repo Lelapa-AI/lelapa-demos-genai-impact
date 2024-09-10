@@ -9,18 +9,14 @@ Handles API errors and rate limits
 Installation
 Clone this repository:
 
-bash
+# To run
 Copy code
 git clone <git@github.com:Lelapa-AI/lelapa-demos-genai-impact.git>
 Navigate to the project directory:
 
-bash
-Copy code
+# To run
 cd <into the project directory>
 Install the required packages:
-
-bash
-Copy code
 pip install -r requirements.txt
 Ensure you have the following packages installed:
 
@@ -35,7 +31,6 @@ Prepare the Model: Ensure you have a trained model saved as action4.keras. You c
 Run the Predictor: Execute the main.py script to start real-time action prediction:
 
 bash
-Copy code
 python main.py
 Interactive Features:
 
