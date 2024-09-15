@@ -4,11 +4,12 @@ from data_processing import DataCollector, DataPreprocessor
 from model import ActionModel
 from predictor import RealTimePredictor
 from translation import translation
+from vulavula.common.error_handler import VulavulaError
 
 if __name__ == "__main__":
     # Define paths and parameters
     DATA_PATH = os.path.join(os.getcwd(), "data")
-    ACTIONSS = ['hello', 'thanks', 'i love you']
+    ACTIONSS = ['hello', 'thanks', 'iloveyou']
     ACTIONS = np.array(ACTIONSS)
     NO_SEQUENCES = 30
     SEQUENCE_LENGTH = 30
@@ -35,11 +36,17 @@ if __name__ == "__main__":
         model_handler.evaluate_model(X_test, y_test)
     
     else:
-
-        # Real-Time Prediction
+        #Real-time prediction
         model_handler = ActionModel(ACTIONS)
         model_handler.load_model(os.path.join(os.getcwd(), "action1.keras"))  # Load the model
         predictor = RealTimePredictor(model_handler.model, ACTIONS)
         predictor.predict_in_real_time()
         word = predictor.get_word()
-        translation(word[0])
+
+        try:
+            translation(word[0])
+        except VulavulaError as e:
+            if '429' in str(e):
+                print("API call limit exceeded. Please use a new API key or contact support to upgrade your plan.")
+            else:
+                print(f"An error occurred: {e}")
