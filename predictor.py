@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import threading
+import asyncio
 from utils import MediapipeUtils
 import time
 from translation import translation
@@ -28,13 +28,13 @@ class RealTimePredictor:
             cv2.putText(output_frame, self.actions[num], (0, 85 + num * 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
         return output_frame
 
-    def countdown_thread(self):
+    async def countdown_thread(self):
         while self.paused:
             if time.time() - self.last_prediction_time >= self.pause_duration:
                 self.paused = False
             time.sleep(0.1)
 
-    def predict_in_real_time(self):
+    async def predict_in_real_time(self):
         cap = cv2.VideoCapture(0)
         utils = MediapipeUtils()
 
@@ -77,7 +77,7 @@ class RealTimePredictor:
 
                             self.paused = True
                             self.last_prediction_time = time.time()
-                            threading.Thread(target=self.countdown_thread).start()
+                            asyncio.create_task(self.countdown_async())
 
                     if len(self.sentence) > 5:
                         self.sentence = self.sentence[-5:]

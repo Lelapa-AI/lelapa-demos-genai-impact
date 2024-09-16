@@ -7,6 +7,7 @@ from translation import translation
 from vulavula.common.error_handler import VulavulaError
 import actions
 import importlib
+import asyncio
 
 if __name__ == "__main__":
     # Define paths and parameters
@@ -44,7 +45,7 @@ if __name__ == "__main__":
     model_handler = ActionModel(ACTIONSS)
     model_handler.load_model(os.path.join(os.getcwd(), "action4.keras"))  # Load the model
     predictor = RealTimePredictor(model_handler.model, ACTIONSS)
-    predictor.predict_in_real_time()
+    asyncio.run(predictor.predict_in_real_time()) 
         # word = predictor.get_word()
 
         # try:
