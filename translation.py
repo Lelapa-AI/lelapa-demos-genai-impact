@@ -1,5 +1,6 @@
 from vulavula import VulavulaClient
 import pyttsx3
+import asyncio
 import tkinter as tk
 from tkinter import messagebox
 
@@ -37,7 +38,7 @@ female_voices = [{'voice-code': 'afr-ZA-dnn-maryna', 'name': 'Maryna', 'descript
                  {'voice-code': 'zul-ZA-dnn-lindiwe', 'name': 'Lindiwe', 'description': 'isiZulu female voice with neural acoustic and vocoder models', 'technique': 'DNN', 'language': 'isizulu', 'lang-code': 'zul', 'country-code': 'ZA', 'gender': 'female', 'age': 'adult', 'sample-rate': 22050},
                  {'voice-code': 'zul-ZA-hmm-lindiwe', 'name': 'Lindiwe', 'description': 'isiZulu female voice with HMM acoustic models and mixed-excitation vocoder', 'technique': 'HMM', 'language': 'isizulu', 'lang-code': 'zul', 'country-code': 'ZA', 'gender': 'female', 'age': 'adult', 'sample-rate': 16000}]
 
-client = VulavulaClient("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI5OWMxOWQ5NmJjYzQzNzU4MjQ5ZDhkOTk5ZTE1N2MxIiwiY2xpZW50X2lkIjoyNzcsInJlcXVlc3RzX3Blcl9taW51dGUiOjAsImxhc3RfcmVxdWVzdF90aW1lIjpudWxsfQ.wWkLvpTD0nM1WW2BrZ8_S3dx8E2uLxd_JRO-VETFYxA")
+client = VulavulaClient("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRiODgyMmIxMDRmMTRhODM5NjMyYTc5MDc2YjUwNTcxIiwiY2xpZW50X2lkIjoxOSwicmVxdWVzdHNfcGVyX21pbnV0ZSI6MCwibGFzdF9yZXF1ZXN0X3RpbWUiOm51bGx9.j_N3VG9k4vq9REGOyugDv_5o-Co4vFWawlVh7WJDiUA")
 
 def choose_voice_code(target_lang, user_gender, user_age):
     # Combine male and female voices into one list
@@ -80,7 +81,7 @@ def text_to_speech(text):
 
 
 
-def translation(text):
+async def translation(text):
   translation_data = {
       "input_text": f"{text}" , # this will come in from siya's mediapipe
       "source_lang": ("eng_Latn"),
@@ -91,7 +92,7 @@ def translation(text):
   source_lang = convert_lang_code(translation_data['source_lang'])
   target_lang = convert_lang_code(translation_data['target_lang'])
 
-  translation_result = client.translate(translation_data)
+  translation_result = await asyncio.to_thread(client.translate, translation_data)
   spoken_text = translation_result['translation'][0]['translated_text']
   
  

@@ -1,5 +1,6 @@
 import cv2
 import mediapipe as mp
+import asyncio
 
 class MediapipeUtils:
     def __init__(self):

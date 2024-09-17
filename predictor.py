@@ -18,10 +18,9 @@ class RealTimePredictor:
         self.last_two_words_found = False
         self.word = []
         self.paused = False
-        self.last_prediction_time = time.time()
-        self.pause_duration = 5  # Duration in seconds
+    
 
-    def prob_viz(self, image, res, colors):
+    async def prob_viz(self, image, res, colors):
         output_frame = image.copy()
         for num, prob in enumerate(res):
             cv2.rectangle(output_frame, (0, 60 + num * 40), (int(prob * 100), 90 + num * 40), colors[num], -1)
@@ -29,10 +28,11 @@ class RealTimePredictor:
         return output_frame
 
     async def countdown_thread(self):
-        while self.paused:
-            if time.time() - self.last_prediction_time >= self.pause_duration:
-                self.paused = False
-            time.sleep(0.1)
+        secs = 5
+        while secs > 0:
+            print(f"countdown {secs}")
+            secs -= 1
+            await asyncio.sleep(1)
 
     async def predict_in_real_time(self):
         cap = cv2.VideoCapture(0)
@@ -43,11 +43,11 @@ class RealTimePredictor:
             ret, frame = cap.read()
             if not ret:
                 break
-
+            
             image, results = utils.mediapipe_detection(frame)
             utils.draw_styled_landmarks(image, results)
 
-            if not self.paused:
+            if self.paused == False:
                 keypoints = self.extract_keypoints(results)
                 self.sequence.append(keypoints)
                 self.sequence = self.sequence[-30:]
@@ -68,21 +68,22 @@ class RealTimePredictor:
                             key_word = self.sentence[-1]
 
                             try:
-                                translation(key_word)
+                                await translation(key_word)
                             except VulavulaError as e:
                                 if '429' in str(e):
                                     print("API call limit exceeded. Please use a new API key or contact support.")
                                 else:
                                     print(f"An error occurred: {e}")
 
-                            self.paused = True
-                            self.last_prediction_time = time.time()
-                            asyncio.create_task(self.countdown_async())
+                    self.paused = True
+                    self.last_prediction_time = time.time()
+                    await asyncio.gather(self.countdown_thread())
+                    self.paused = False
 
                     if len(self.sentence) > 5:
                         self.sentence = self.sentence[-5:]
 
-                    image = self.prob_viz(image, res, self.colors)
+                    image = await self.prob_viz(image, res, self.colors)
 
             cv2.rectangle(image, (0, 0), (640, 40), (245, 117, 16), -1)
             cv2.putText(image, ' '.join(self.sentence), (3, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
