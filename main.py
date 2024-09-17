@@ -43,7 +43,7 @@ if __name__ == "__main__":
     # else:
         #Real-time prediction
     model_handler = ActionModel(ACTIONSS)
-    model_handler.load_model(os.path.join(os.getcwd(), "action4.keras"))  # Load the model
+    model_handler.load_model(os.path.join(os.getcwd(), "action1.keras"))  # Load the model
     predictor = RealTimePredictor(model_handler.model, ACTIONSS)
     asyncio.run(predictor.predict_in_real_time()) 
         # word = predictor.get_word()
