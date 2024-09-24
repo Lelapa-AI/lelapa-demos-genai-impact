@@ -23,29 +23,32 @@
 
     <button id="webcamButton">Start webcam</button>
     <h2>2. Create a new Call</h2>
-    <button id="callButton">Create Call (offer)</button>
+    <button id="callButton" onclick="callButton">Create Call (offer)</button>
 
     <h2>3. Join a Call</h2>
     <p>Answer the call from a different browser window or device</p>
 
     <input id="callInput" />
-    <button id="answerButton" disabled>Answer</button>
+    <button id="answerButton">Answer</button>
 
     <h2>4. Hangup</h2>
 
     <button id="hangupButton" disabled>Hangup</button>
-    <!-- <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script> -->
+    <script
+      defer
+      src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"
+    ></script>
 
     <!-- <script
       defer
       src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"
     ></script> -->
-    <!-- <script
+    <script
       defer
       src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"
-    ></script> -->
+    ></script>
 
-    <!-- <script defer src="./init-firebase.js"></script> -->
+    <!-- <script defer src="/init-firebase.js"></script> -->
 
     <script type="module" src="/main.js"></script>
   </body>
