@@ -41,6 +41,12 @@ const querySnapshot = await getDocs(collection(db, "calls"));
 querySnapshot.forEach((doc) => {
   console.log(`${doc.id} => ${doc.data()}`);
 });
+
+const queryAnswerSnapshot = await getDocs(collection(db, "answer"));
+
+queryAnswerSnapshot.forEach((doc) => {
+  console.log(`${doc.id} => ${doc.data()}`);
+});
 // const callDoc = onSnapshot(collect, (snapshot) => {
 //   snapshot.docChanges().forEach((change) => {
 //     if (change.type === "added") {
@@ -90,7 +96,10 @@ webcamButton.onclick = async () => {
     video: true,
     audio: true,
   });
-  remoteStream = new MediaStream();
+  remoteStream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true,
+  });
 
   // Push tracks from local stream to peer connection
   localStream.getTracks().forEach((track) => {
@@ -125,9 +134,8 @@ callButton.onclick = async () => {
   // const answerCandidates = callDoc.collection("answerCandidates");
 
   const offerCandidates = collection(callDocRef, "offerCandidates");
-  const answerCandidates = collection(callDocRef, "answerCandidates");
 
-  callInput.value = callDocRef.id;
+  callDocRef.value = callInput.id;
 
   // Get candidates for caller, save to db
   pc.onicecandidate = (event) => {
@@ -205,20 +213,20 @@ callButton.onclick = async () => {
 
   // When answered, add candidate to peer connection
 
-  pc.onicecandidate = (event) => {
-    event.candidate && addDoc(answerCandidates, event.candidate.toJSON());
-  };
+  // pc.onicecandidate = (event) => {
+  //   event.candidate && addDoc(answerCandidates, event.candidate.toJSON());
+  // };
 
-  const answerDescription = await pc.createOffer();
-  await pc.setLocalDescription(answerDescription);
+  // const answerDescription = await pc.createAnswer();
+  // await pc.setLocalDescription(answerDescription);
 
-  const answer = {
-    sdp: answerDescription.sdp,
-    type: answerDescription.type,
-  };
+  // const answer = {
+  //   sdp: answerDescription.sdp,
+  //   type: answerDescription.type,
+  // };
 
-  // await callDoc.set({ offer });
-  await setDoc(callDocRef, { answer });
+  // // await callDoc.set({ offer });
+  // await setDoc(callDocRef, { answer });
 
   // answerCandidates.onSnapshot((snapshot) => {
   //   snapshot.docChanges().forEach((change) => {
@@ -231,9 +239,10 @@ callButton.onclick = async () => {
 
   const unsubscribe = onSnapshot(callDocRef, (snapshot) => {
     const data = snapshot.data();
-    if (!pc.currentRemoteDescription && data?.answer) {
-      const answerDescription = new RTCSessionDescription(data.answer);
-      pc.setRemoteDescription(answerDescription);
+    if (!pc.currentRemoteDescription && data?.offer) {
+      const offerDescription = new RTCSessionDescription(data.offer);
+      pc.setRemoteDescription(offerDescription);
+      console.log(snapshot);
     }
   });
 
@@ -269,12 +278,7 @@ answerButton.onclick = async () => {
     callId,
     "answerCandidates"
   );
-  const offerCollectionRef = collection(
-    db,
-    "answer",
-    callId,
-    "offerCandidates"
-  );
+  const offerCollectionRef = collection(db, "calls", callId, "offerCandidates");
 
   pc.onicecandidate = (event) => {
     event.candidate &&
@@ -297,14 +301,13 @@ answerButton.onclick = async () => {
 
   await callDoc.update({ answer });
 
-  offerCandidates.onSnapshot((snapshot) => {
-    snapshot.docChanges().forEach((change) => {
-      console.log(change);
-      if (change.type === "added") {
-        let data = change.doc.data();
-        pc.addIceCandidate(new RTCIceCandidate(data));
-      }
-    });
+  const unsubscribe = onSnapshot(callDocRef, (snapshot) => {
+    if (!pc.currentRemoteDescription && data?.answer) {
+      const answerDescription = new RTCSessionDescription(data.answer);
+      pc.setRemoteDescription(answerDescription);
+      console.log(snapshot);
+    }
   });
+
   hangupButton.disabled = false;
 };

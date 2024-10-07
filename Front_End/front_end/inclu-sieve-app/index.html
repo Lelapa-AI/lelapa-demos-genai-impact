@@ -3,37 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inclu-sieve-app</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <h2>1. Start your Webcam</h2>
+      <div class="videos">
+        <span>
+          <h3>Local Stream</h3>
+          <video id="webcamVideo" autoplay playsinline></video>
+        </span>
+        <span>
+          <h3>Remote Stream</h3>
+          <video id="remoteVideo" autoplay playsinline></video>
+        </span>
+      </div>
 
-    <h2>1. Start your Webcam</h2>
-    <div class="videos">
-      <span>
-        <h3>Local Stream</h3>
-        <video id="webcamVideo" autoplay playsinline></video>
-      </span>
-      <span>
-        <h3>Remote Stream</h3>
-        <video id="remoteVideo" autoplay playsinline></video>
-      </span>
+      <button id="webcamButton">Start webcam</button>
+      <h2>2. Create a new Call</h2>
+      <button id="callButton" onclick="callButton">Create Call (offer)</button>
+
+      <h2>3. Join a Call</h2>
+      <p>Answer the call from a different browser window or device</p>
+
+      <input id="callInput" type="input" />
+      <button id="answerButton">Answer</button>
+
+      <h2>4. Hangup</h2>
+
+      <button id="hangupButton" disabled>Hangup</button>
     </div>
-
-    <button id="webcamButton">Start webcam</button>
-    <h2>2. Create a new Call</h2>
-    <button id="callButton" onclick="callButton">Create Call (offer)</button>
-
-    <h2>3. Join a Call</h2>
-    <p>Answer the call from a different browser window or device</p>
-
-    <input id="callInput" />
-    <button id="answerButton">Answer</button>
-
-    <h2>4. Hangup</h2>
-
-    <button id="hangupButton" disabled>Hangup</button>
     <script
       defer
       src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"
